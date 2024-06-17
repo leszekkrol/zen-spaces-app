@@ -11,8 +11,41 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Zen Spaces',
+      themeMode: ThemeMode.system, // Change based on system theme
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
+        textTheme: const TextTheme(
+          bodySmall: TextStyle(color: Colors.black),
+          bodyMedium: TextStyle(color: Colors.black),
+          bodyLarge: TextStyle(color: Colors.black),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          hintStyle: TextStyle(color: Colors.grey),
+          prefixIconColor: Colors.grey,
+        ),
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: const TextTheme(
+          bodySmall: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
+          bodyLarge: TextStyle(color: Colors.white),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.grey,
+          hintStyle: TextStyle(color: Colors.white70),
+          prefixIconColor: Colors.white70,
+        ),
+      ),
       home: MyHomePage(),
     );
   }
@@ -77,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       body: GestureDetector(
         onTap: () => _hideKeyboard(context),
@@ -99,6 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Expanded(
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
                 itemCount: _filteredApps?.length ?? 0,
                 itemBuilder: (context, index) {
@@ -108,7 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         ? Image.memory(app.icon!)
                         : null,
                     title: Text(app.name),
-                    subtitle: Text(app.packageName),
                     onTap: () => _startApp(app.packageName),
                   );
                 },
