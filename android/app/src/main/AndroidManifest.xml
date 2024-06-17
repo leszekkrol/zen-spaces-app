@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.flutter_launcher">
+          package="com.leszekkrol.zenspaces">
 
     <!-- Add this permission -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 
     <application
-            android:label="zen_spaces"
+            android:label="ZenSpaces"
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher">
         <activity

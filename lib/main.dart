@@ -11,13 +11,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Zen Spaces',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(),
+      home: MyHomePage(),
     );
   }
 }
@@ -62,50 +58,64 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startApp(String packageName) async {
     try {
-      await InstalledApps.startApp(packageName);
+      if (FocusScope.of(context).hasFocus) {
+        FocusScope.of(context).unfocus();
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      else {
+        await InstalledApps.startApp(packageName);
+      }
     } catch (e) {
       print('Could not start app: $packageName');
     }
   }
 
+  void _hideKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _installedApps == null
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search apps...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+      extendBodyBehindAppBar: true,
+      body: GestureDetector(
+        onTap: () => _hideKeyboard(context),
+        child: _installedApps == null
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search apps...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-              itemCount: _filteredApps?.length ?? 0,
-              itemBuilder: (context, index) {
-                AppInfo app = _filteredApps![index];
-                return ListTile(
-                  leading: app.icon != null
-                      ? Image.memory(app.icon!)
-                      : null,
-                  title: Text(app.name),
-                  subtitle: Text(app.packageName),
-                  onTap: () => _startApp(app.packageName),
-                );
-              },
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                itemCount: _filteredApps?.length ?? 0,
+                itemBuilder: (context, index) {
+                  AppInfo app = _filteredApps![index];
+                  return ListTile(
+                    leading: app.icon != null
+                        ? Image.memory(app.icon!)
+                        : null,
+                    title: Text(app.name),
+                    subtitle: Text(app.packageName),
+                    onTap: () => _startApp(app.packageName),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
